@@ -8,7 +8,7 @@ defmodule Blinkup.Repo.Migrations.CreateUsersAuthTables do
       add :id, :binary_id, primary_key: true
       add :email, :citext
       add :phone_number, :string
-      add :hashed_password, :string, null: false
+      add :hashed_password, :string
       add :confirmed_at, :naive_datetime
       timestamps()
     end

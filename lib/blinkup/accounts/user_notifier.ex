@@ -83,7 +83,7 @@ defmodule Blinkup.Accounts.UserNotifier do
     Your one time password is: #{token}
     """
 
-    if System.get_env("MIX_ENV") == "development" do
+    if System.get_env("MIX_ENV") == nil do
       IO.puts msg
     end
 

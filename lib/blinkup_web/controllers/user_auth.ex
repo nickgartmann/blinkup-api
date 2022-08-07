@@ -94,6 +94,16 @@ defmodule BlinkupWeb.UserAuth do
     assign(conn, :current_user, user)
   end
 
+  def fetch_api_current_user(conn, _opts) do
+    case auth_header = Plug.Conn.get_req_header(conn, "authorization") do
+      [] ->
+        conn
+      ["Bearer " <> token] ->
+        user = token && Accounts.get_user_by_bearer_token(token)
+        assign(conn, :current_user, user)
+    end
+  end
+
   defp ensure_user_token(conn) do
     if user_token = get_session(conn, :user_token) do
       {user_token, conn}

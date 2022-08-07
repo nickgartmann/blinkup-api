@@ -234,6 +234,17 @@ defmodule Blinkup.Accounts do
     Repo.one(query)
   end
 
+  def get_user_by_bearer_token(token) do
+    case Base.url_decode64(token, padding: false) do
+      {:ok, decoded_token} ->
+        {:ok, query} = UserToken.verify_session_token_query(decoded_token) 
+        IO.inspect query
+        Repo.one(query)
+      :error ->
+        nil
+    end
+  end
+
   @doc """
   Deletes the signed token with the given context.
   """
@@ -353,7 +364,7 @@ defmodule Blinkup.Accounts do
 
   def get_or_create_user_with_phone_number(phone_number) do
     if user = Repo.get_by(User, phone_number: phone_number) do
-      user
+      {:ok, user}
     else
       register_user(%{"phone_number" => phone_number})
     end

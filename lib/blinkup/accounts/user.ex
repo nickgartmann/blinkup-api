@@ -54,7 +54,6 @@ defmodule Blinkup.Accounts.User do
 
   defp validate_password(changeset, opts) do
     changeset
-    |> validate_required([:password])
     |> validate_length(:password, min: 12, max: 72)
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
@@ -146,3 +145,14 @@ defmodule Blinkup.Accounts.User do
     end
   end
 end
+
+defimpl Jason.Encoder, for: Blinkup.Accounts.User do
+  def encode(value, opts) do
+    Jason.Encode.map(Map.take(value, [
+      :id,
+      :email,
+      :phone_number
+    ]), opts)
+  end
+end
+

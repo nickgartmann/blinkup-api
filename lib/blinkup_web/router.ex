@@ -14,6 +14,7 @@ defmodule BlinkupWeb.Router do
   end
 
   pipeline :api do
+    plug :fetch_api_current_user
     plug :accepts, ["json"]
   end
 
@@ -27,9 +28,9 @@ defmodule BlinkupWeb.Router do
    scope "/api", BlinkupWeb do
      pipe_through :api
 
-     get "/session", SessionController, :show
-     post "/session", SessionController, :create
-     delete "/session", SessionController, :delete
+     get "/session", Api.UserSessionController, :show
+     post "/session", Api.UserSessionController, :create
+     post "/session/verify", Api.UserSessionController, :verify
    end
 
   # Enables LiveDashboard only for development

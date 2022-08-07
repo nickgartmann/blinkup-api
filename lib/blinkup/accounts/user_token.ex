@@ -12,6 +12,7 @@ defmodule Blinkup.Accounts.UserToken do
   @confirm_validity_in_days 7
   @change_email_validity_in_days 7
   @session_validity_in_days 60
+  @verify_session_validity_in_minutes 10
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -131,6 +132,9 @@ defmodule Blinkup.Accounts.UserToken do
   defp days_for_context("confirm"), do: @confirm_validity_in_days
   defp days_for_context("reset_password"), do: @reset_password_validity_in_days
 
+
+  
+
   @doc """
   Checks if the token is valid and returns its underlying lookup query.
 
@@ -159,6 +163,30 @@ defmodule Blinkup.Accounts.UserToken do
       :error ->
         :error
     end
+  end
+
+  def build_phone_token(user, context) do
+    if(user.phone_number) do
+      token = "#{Enum.random(100_000..999_999)}"
+      {token,
+       %UserToken{
+         token: token,
+         context: context,
+         sent_to: user.phone_number,
+         user_id: user.id
+       }}
+    else 
+      {:error, "User does not have a phone number"}
+    end
+  end
+
+  def verify_session_token_query(token, context) do
+    query = from token in token_and_context_query(token, context),
+      join: user in assoc(token, :user),
+      where: token.inserted_at > ago(@verify_session_validity_in_minutes, "minute") and token.sent_to == user.phone_number,
+      select: user
+
+    {:ok, query}
   end
 
   @doc """

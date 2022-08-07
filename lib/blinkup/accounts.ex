@@ -350,4 +350,31 @@ defmodule Blinkup.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  def get_or_create_user_with_phone_number(phone_number) do
+    if user = Repo.get_by(User, phone_number: phone_number) do
+      user
+    else
+      register_user(%{"phone_number" => phone_number})
+    end
+  end
+
+  def deliver_phone_verification_token(user) do
+    case UserToken.build_phone_token(user, "verify_session") do
+      {:error, message} ->
+        {:error, message}
+      {raw_token, user_token} ->
+        Repo.insert!(user_token)
+        UserNotifier.deliver_session_verification_token(user, raw_token)
+    end
+  end
+
+  def validate_session(token) do
+    with {:ok, query} <- UserToken.verify_session_token_query(token, "verify_session"),
+         %User{} = user <- Repo.one(query) do
+      {:ok, user}
+    else
+      _ -> :error
+    end
+  end
 end

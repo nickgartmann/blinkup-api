@@ -24,9 +24,13 @@ defmodule BlinkupWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", BlinkupWeb do
-  #   pipe_through :api
-  # end
+   scope "/api", BlinkupWeb do
+     pipe_through :api
+
+     get "/session", SessionController, :show
+     post "/session", SessionController, :create
+     delete "/session", SessionController, :delete
+   end
 
   # Enables LiveDashboard only for development
   #

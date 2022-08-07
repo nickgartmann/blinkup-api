@@ -191,6 +191,34 @@ defmodule Blinkup.AccountsTest do
     end
   end
 
+  describe "deliver_phone_verification_token/1"do
+    setup do
+      %{user: user_fixture()}
+    end
+    test "sends token", %{user: user} do
+      token = Accounts.deliver_phone_verification_token(user)
+              |> String.slice(-7..-2)
+      assert user_token = Repo.get_by(UserToken, token: token)
+      assert user_token.user_id == user.id
+      assert user_token.sent_to == user.phone_number
+      assert user_token.context == "verify_session"
+    end
+  end
+
+  describe "validate_session/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+    test "creates and can validate token", %{user: user} do
+      token = Accounts.deliver_phone_verification_token(user)
+              |> String.slice(-7..-2)
+
+      {:ok, validated_user} = Accounts.validate_session(token)
+      assert validated_user.id == user.id
+    end
+
+  end
+
   describe "update_user_email/2" do
     setup do
       user = user_fixture()

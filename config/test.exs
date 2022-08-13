@@ -21,7 +21,7 @@ config :blinkup, Blinkup.Repo,
 config :blinkup, BlinkupWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "47sMXPTL0cI8CwklXrVugCeYxJ3pHOE8sZ+gSF+IOX9ObtNX/9796lkaMjSET9Iv",
-  server: false
+  server: true
 
 # In test we don't send emails.
 config :blinkup, Blinkup.Mailer, adapter: Swoosh.Adapters.Test

@@ -20,6 +20,19 @@ defmodule Blinkup.Application do
       # {Blinkup.Worker, arg}
     ]
 
+
+    IO.inspect Mix.env()
+
+    ## Start the OTPRegistry if we are in test
+    children = if Mix.env() in [:test] do
+      children = children ++ [
+        Blinkup.OTPRegistry
+      ]
+    else 
+      children
+    end
+
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Blinkup.Supervisor]

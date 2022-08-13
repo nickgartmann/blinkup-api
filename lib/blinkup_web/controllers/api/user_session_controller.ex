@@ -28,4 +28,11 @@ defmodule BlinkupWeb.Api.UserSessionController do
     end
   end
 
+  def otp(conn, %{"phone" => phone_number}) do
+    if Mix.env() in [:test] do 
+      otp = Blinkup.OTPRegistry.get("session:#{phone_number}")
+      json(conn, %{"otp" => otp})
+    end
+  end
+
 end

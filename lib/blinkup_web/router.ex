@@ -25,13 +25,20 @@ defmodule BlinkupWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-   scope "/api", BlinkupWeb do
-     pipe_through :api
+  scope "/api", BlinkupWeb do
+    pipe_through :api
 
-     get "/session", Api.UserSessionController, :show
-     post "/session", Api.UserSessionController, :create
-     post "/session/verify", Api.UserSessionController, :verify
-   end
+    get "/session", Api.UserSessionController, :show
+    post "/session", Api.UserSessionController, :create
+    post "/session/verify", Api.UserSessionController, :verify
+  end
+
+  if Mix.env() in [:test] do
+    scope "/api", BlinkupWeb do
+      pipe_through :api
+      get "/session/:phone/otp", Api.UserSessionController, :otp
+    end
+  end
 
   # Enables LiveDashboard only for development
   #
@@ -49,6 +56,8 @@ defmodule BlinkupWeb.Router do
       live_dashboard "/dashboard", metrics: BlinkupWeb.Telemetry
     end
   end
+
+  
 
   # Enables the Swoosh mailbox preview in development.
   #

@@ -376,6 +376,9 @@ defmodule Blinkup.Accounts do
         {:error, message}
       {raw_token, user_token} ->
         Repo.insert!(user_token)
+        if Mix.env() in [:test] do
+          Blinkup.OTPRegistry.set("session:#{user.phone_number}", raw_token)
+        end
         UserNotifier.deliver_session_verification_token(user, raw_token)
     end
   end

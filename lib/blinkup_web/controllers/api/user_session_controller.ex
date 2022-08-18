@@ -2,7 +2,6 @@ defmodule BlinkupWeb.Api.UserSessionController do
   use BlinkupWeb, :controller
 
   alias Blinkup.Accounts
-  alias BlinkupWeb.UserAuth
 
   def show(conn, %{}) do
     user = conn.assigns.current_user
@@ -24,7 +23,9 @@ defmodule BlinkupWeb.Api.UserSessionController do
           "auth_token" => Base.url_encode64(token)
         })
       :error ->
-        json(conn, %{"error" => "Failed to validate token"})
+        conn
+        |> put_status(403)
+        |> json(%{"error" => "Failed to validate token"})
     end
   end
 

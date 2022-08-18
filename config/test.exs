@@ -19,7 +19,7 @@ config :blinkup, Blinkup.Repo,
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :blinkup, BlinkupWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4002],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   secret_key_base: "47sMXPTL0cI8CwklXrVugCeYxJ3pHOE8sZ+gSF+IOX9ObtNX/9796lkaMjSET9Iv",
   server: true
 

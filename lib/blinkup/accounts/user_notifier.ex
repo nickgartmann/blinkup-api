@@ -77,7 +77,7 @@ defmodule Blinkup.Accounts.UserNotifier do
     """)
   end
 
-  def deliver_session_verification_token(user, token) do
+  def deliver_session_verification_token(_user, token) do
     # TODO: implement a text token sender w/ twilio
     msg = """
     Your one time password is: #{token}

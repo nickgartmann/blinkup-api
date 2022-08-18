@@ -95,7 +95,7 @@ defmodule BlinkupWeb.UserAuth do
   end
 
   def fetch_api_current_user(conn, _opts) do
-    case auth_header = Plug.Conn.get_req_header(conn, "authorization") do
+    case Plug.Conn.get_req_header(conn, "authorization") do
       [] ->
         conn
       ["Bearer " <> token] ->

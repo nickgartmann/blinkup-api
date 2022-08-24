@@ -9,7 +9,8 @@ import Config
 
 config :blinkup,
   ecto_repos: [Blinkup.Repo],
-  generators: [binary_id: true]
+  generators: [binary_id: true],
+  children: []
 
 # Configures the endpoint
 config :blinkup, BlinkupWeb.Endpoint,

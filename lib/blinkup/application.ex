@@ -17,22 +17,23 @@ defmodule Blinkup.Application do
       # Start the Endpoint (http/https)
       BlinkupWeb.Endpoint
       # Start a worker by calling: Blinkup.Worker.start_link(arg)
-      # {Blinkup.Worker, arg}
-    ]
+      # {Blinkup.Worker, arg},
+    ] ++ Application.get_env(:blinkup, :children)
 
-    ## Start the OTPRegistry if we are in test
-    children = if Mix.env() in [:test] do
-      children = children ++ [
-        Blinkup.OTPRegistry
-      ]
-    else 
-      children
-    end
+    hook_module = Application.get_env(:blinkup, :hooks)
+
+    # Run preload hooks
+    if hook_module && Kernel.function_exported?(hook_module, :pre_load, 0), do: hook_module.pre_load() 
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Blinkup.Supervisor]
-    Supervisor.start_link(children, opts)
+    startup_result =  Supervisor.start_link(children, opts)
+
+    # Run post-load hooks
+    if hook_module && Kernel.function_exported?(hook_module, :post_load, 0), do: hook_module.post_load() 
+
+    startup_result
   end
 
   # Tell Phoenix to update the endpoint configuration

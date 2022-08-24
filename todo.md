@@ -1,0 +1,3 @@
+- [ ] Set up a Fly e2e test environment
+- [ ] Set up a Fly prod environment
+- [ ] Copy in old blinkup api code (https://github.com/nickgartmann/blinkup-api-old)
